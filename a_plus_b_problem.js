@@ -34,8 +34,25 @@ export class Solution {
    * @param b: An integer
    * @return: The sum of a and b 
    */
-  aplusb(a, b) {
+  aplusb1(a, b) {
     // write your code here
     return a + b;
   }
+
+  aplusb2(a, b) {
+  // write your code here
+  while (b != 0) {
+    // carry now contains common 
+    //set bits of a and b
+    let carry = a & b;    
+    // Sum of bits of x and y where at 
+    //least one of the bits is not set
+    a = a ^ b; 
+ 
+    // Carry is shifted by one so that adding
+    // it to x gives the required sum
+    b = carry << 1;
+  }
+  return a;
+}
 }
