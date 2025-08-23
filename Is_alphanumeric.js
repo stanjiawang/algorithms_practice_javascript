@@ -27,6 +27,7 @@ export class Solution {
 
   isAlphanumeric2(c) {
     // write your code here
-    return /[A-Za-z0-9]/.test(c)
+    const reg = /[A-Za-z0-9]/;
+    return reg.test(c)
   }
 }
