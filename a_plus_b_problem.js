@@ -1,4 +1,5 @@
 /*
+https://www.lintcode.com/problem/1
 Write a function that add two numbers a and b, and return the answer as an integer(int).
 
 Example 1:
