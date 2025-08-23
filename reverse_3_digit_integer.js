@@ -1,4 +1,5 @@
 /*
+https://www.lintcode.com/problem/37/
 Reverse a 3-digit integer.
 You can assume the given number is larger or equal to 100 but smaller than 1000.
 
