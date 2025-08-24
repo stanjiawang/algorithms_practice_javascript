@@ -27,7 +27,7 @@ export class Solution {
    * @param month: a number month
    * @return: return the number of days of the month.
    */
-  getTheMonthDays(year, month) {
+  getTheMonthDays1(year, month) {
     // write your code here
     if (month === 1 || month === 3 || month === 5 || month === 7 || month === 8 || month === 10 || month === 12) {
         return 31;
@@ -38,5 +38,15 @@ export class Solution {
     } else {
         return 28;
     }
+  }
+
+  getTheMonthDays(year, month) {
+    const day = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    if (month == 2) {
+        if (year % 400 == 0 || (year % 4 == 0 && year % 100 != 0)) {
+            return 29;
+        }
+    }
+    return day[month];
   }
 }
