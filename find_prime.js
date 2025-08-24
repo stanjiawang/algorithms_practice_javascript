@@ -36,3 +36,5 @@ export class Solution {
     return true;
   }
 }
+
+/* O(n √n）*/
