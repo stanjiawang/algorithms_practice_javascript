@@ -25,7 +25,7 @@ export class Solution {
    * @param k: an integer
    * @return: rotate the array to the right by k steps
    */
-  rotate(nums, k) {
+  rotate1(nums, k) {
     // Write your code here
     while (k > 0) {
         let end = nums.pop();
@@ -34,5 +34,14 @@ export class Solution {
     }
 
     return nums;
+  }
+
+  rotate2(nums, k) {
+    const n = nums.length;
+    const newArr = new Array(n);
+    for (let i = 0; i < n; ++i) {
+        newArr[(i + k) % n] = nums[i];
+    }
+    return newArr
   }
 }
