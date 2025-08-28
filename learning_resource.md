@@ -4,6 +4,7 @@ Learning resource:
 
 3. https://www.lintcode.com/course/98
 4. https://www.lintcode.com/course/90
+5. https://leetcode.com/studyplan/top-interview-150
 
 Algorithms and Data structure Tutorial - freeCodeCamp
 ￼
