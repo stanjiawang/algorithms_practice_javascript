@@ -1,3 +1,4 @@
+// MinHeap (smallest element at the top)
 class MinHeap {
   constructor() {
     this._a = []; // store heap elements in an array (binary heap, level order)
