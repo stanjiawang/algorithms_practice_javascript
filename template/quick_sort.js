@@ -1,3 +1,4 @@
+// Quick Sort (In-Place, Lomuto Partition)
 function quickSort (arr, low = 0, hi = arr.length - 1) {
   if (lo < hi) {
     const p = partition(arr, lo, hi);
