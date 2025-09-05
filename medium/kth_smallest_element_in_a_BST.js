@@ -8,10 +8,6 @@ Given a binary search tree, write a function kthSmallest to find the kth smalles
 You may assume k is always valid, 1 ≤ k ≤ BST's total elements.
 */
 
-import {
-  TreeNode,
-} from '/opt/node/lib/lintcode/index.js';
-
 /**
  * Definition of TreeNode:
  * class TreeNode {
