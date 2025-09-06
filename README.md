@@ -1,4 +1,3 @@
 # javascript
-Prepare interviews
+Prepare Algorithms interview
 
-# Jiuzhang Lintcode practice
