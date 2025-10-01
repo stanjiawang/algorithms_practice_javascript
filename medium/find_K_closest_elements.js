@@ -18,11 +18,11 @@ Output: [4, 1, 6]
 
 export class Solution {
   /**
-   * @param arr: sorted array of integers (ascending order)
-   * @param target: the number we want to find closest elements to
+   * @param arr: sorted ascending array
+   * @param target: the reference number
    * @param k: how many closest numbers to return
-   * @return: an array of k numbers ordered by closeness to target
-   *          (if tie, smaller number comes first)
+   * @return: k numbers ordered by closeness to target
+   *          (if tie → smaller number first)
    */
   kClosestNumbers(arr, target, k) {
     const n = arr.length;
@@ -30,47 +30,50 @@ export class Solution {
 
     // ---------- Step 1: Binary search for lowerBound ----------
     // lowerBound = first index where arr[i] >= target
-    // Template to remember:
-    //   search space [left, right)
-    //   while (left < right): mid = (left+right)/2
-    //   if arr[mid] >= target → move right
-    //   else move left
+    // Template:
+    //   while (left < right)
+    //     mid = (left+right)/2
+    //     if arr[mid] >= target → move right = mid
+    //     else → move left = mid+1
     const lowerBound = (arr, target) => {
-      let left = 0, right = arr.length; // half-open interval [left, right)
+      let left = 0, right = arr.length; // search in [left, right)
       while (left < right) {
         const mid = left + Math.floor((right - left) / 2);
         if (arr[mid] >= target) {
-          right = mid;   // keep mid (could be the first >= target)
+          right = mid;   // keep mid, might still be the first >= target
         } else {
-          left = mid + 1; // discard left half including mid
+          left = mid + 1; // discard the left half
         }
       }
-      return left; // first index where arr[i] >= target, or n if none
+      return left; // left is the first >= target, or n if none
     };
 
-    // right pointer starts at the first >= target
+    // right = first element >= target
     let right = lowerBound(arr, target);
-    // left pointer is the element just before right
+    // left = one position before right (last < target)
     let left = right - 1;
 
-    // ---------- Step 2: Expand outwards k times ----------
-    // Compare distance of arr[left] and arr[right] to target
-    // If tie, choose arr[left] (smaller number)
+    // ---------- Step 2: Expand with two pointers ----------
+    // Rules:
+    //   - If left is out of range → take from right
+    //   - If right is out of range → take from left
+    //   - If both are valid → compare distances
+    //   - If distances are equal → prefer left (smaller number)
     const result = [];
-    const total = Math.min(k, n); // in case k > n
+    const total = Math.min(k, n);
 
     while (result.length < total) {
-      // Case 1: left pointer is out of range → must take right side
+      // Case 1: left pointer exhausted → must take from right
       if (left < 0) {
         result.push(arr[right]);
         right++;
       }
-      // Case 2: right pointer is out of range → must take left side
+      // Case 2: right pointer exhausted → must take from left
       else if (right >= n) {
         result.push(arr[left]);
         left--;
       }
-      // Case 3: both pointers are valid → pick the closer one
+      // Case 3: both pointers valid → choose closer one
       else {
         const distLeft = Math.abs(arr[left] - target);
         const distRight = Math.abs(arr[right] - target);
@@ -85,7 +88,11 @@ export class Solution {
       }
     }
 
-    // result is already ordered by closeness (ties resolved by smaller value first)
-    return result;
+    return result; // already ordered by closeness
   }
 }
+
+/*
+Time: O(log n + k)
+Space: O(k) (for output), O(1) extra
+*/
