@@ -1,4 +1,6 @@
 /*
+https://www.lintcode.com/course/98/learn/57?chapterId=519&sectionId=3935&ac=true
+
 3Sum
 
 Given an array S of n integers, are there elements a, b, c in S such that a + b + c = 0? Find all unique triplets in the array which gives the sum of zero.
