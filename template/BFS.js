@@ -10,33 +10,114 @@ When to use BFS:
 3. Multi-source shortest path (queue initialized with multiple sources).
 */
 
-function bfs(grid, starts) {
-  const m = grid.length;
-  const n = grid[0].length;
-  const dirs = [[1,0], [-1,0], [0,1], [0,-1]];
-
-  const visited = Array.from({ length: m }, () => Array(n).fill(false));
+/**
+ * Breadth-First Search (BFS) Template
+ * @param {Node} startNode - The starting node
+ * @param {Node} endNode - (optional) The target node
+ * @return {Map<Node, number>} distance - shortest distance from startNode
+ */
+function bfs(startNode, endNode = null) {
+  // Queue for BFS
   const queue = [];
+  // Map to record if a node has been visited, and the shortest distance
+  const distance = new Map();
 
-  // Multi-source BFS: initialize with all starting points
-  for (const [r, c] of starts) {
-    queue.push([r, c, 0]); // [row, col, distance]
-    visited[r][c] = true;
-  }
+  // Initialize: push start node into queue
+  queue.push(startNode);
+  distance.set(startNode, 0); // can be 1 if problem requires counting from 1
 
+  // While queue is not empty
   while (queue.length > 0) {
-    const [r, c, dist] = queue.shift();
+    const node = queue.shift(); // pop from front (queue behavior)
 
-    // ---- Put your logic here ----
-    // e.g., update distance: grid[r][c] = dist;
+    // If we have a target node, we can stop early
+    if (endNode !== null && node === endNode) {
+      return distance.get(endNode);
+    }
 
-    for (const [dr, dc] of dirs) {
-      const nr = r + dr, nc = c + dc;
-      if (nr < 0 || nr >= m || nc < 0 || nc >= n) continue;
-      if (visited[nr][nc]) continue;
+    // Traverse neighbors
+    for (const neighbor of node.getNeighbors()) {
+      // Skip visited nodes
+      if (distance.has(neighbor)) continue;
 
-      visited[nr][nc] = true;
-      queue.push([nr, nc, dist + 1]);
+      // Push neighbor into queue
+      queue.push(neighbor);
+      // Update shortest distance
+      distance.set(neighbor, distance.get(node) + 1);
     }
   }
+
+  // Common return choices (based on problem type):
+  // 1. Return all distances
+  return distance;
+  // 2. Return all connected nodes
+  // return Array.from(distance.keys());
+  // 3. Return shortest path distance to endNode
+  // return distance.get(endNode);
+}
+
+// Topological Sort Template
+/**
+ * Topological Sort using BFS (Kahn's Algorithm)
+ * @param {Node[]} nodes - List of all nodes in the graph
+ * @return {Node[]} topoOrder - topological order of nodes
+ */
+function topologicalSort(nodes) {
+  // Step 1: Calculate indegrees of all nodes
+  const indegrees = getIndegrees(nodes);
+
+  // Step 2: Initialize queue with all nodes that have indegree 0
+  const queue = [];
+  for (const node of nodes) {
+    if (indegrees.get(node) === 0) {
+      queue.push(node);
+    }
+  }
+
+  // Step 3: Process queue
+  const topoOrder = [];
+  while (queue.length > 0) {
+    const node = queue.shift();
+    topoOrder.push(node);
+
+    // Decrease indegree of all neighbors
+    for (const neighbor of node.getNeighbors()) {
+      indegrees.set(neighbor, indegrees.get(neighbor) - 1);
+
+      // If indegree becomes 0, add to queue
+      if (indegrees.get(neighbor) === 0) {
+        queue.push(neighbor);
+      }
+    }
+  }
+
+  // Step 4: Check if topological sort is valid (no cycle)
+  if (topoOrder.length !== nodes.length) {
+    throw new Error("Graph has a cycle, no valid topological order exists.");
+  }
+
+  return topoOrder;
+}
+
+/**
+ * Helper function: Get indegree of each node
+ * @param {Node[]} nodes
+ * @return {Map<Node, number>}
+ */
+function getIndegrees(nodes) {
+  const indegrees = new Map();
+
+  // Initialize all nodes with indegree 0
+  for (const node of nodes) {
+    indegrees.set(node, 0);
+  }
+
+  // Count indegrees
+  for (const node of nodes) {
+    for (const neighbor of node.getNeighbors()) {
+      indegrees.set(neighbor, indegrees.get(neighbor) + 1);
+    }
+  }
+
+  return indegrees;
 }
