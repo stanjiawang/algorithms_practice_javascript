@@ -1,4 +1,4 @@
-# Apple Front-End Interview: High-Frequency Algorithm Templates
+# Front-End Interview: High-Frequency Algorithm Templates
 
 ## Table of Contents
 1. [Binary Search](#binary-search)
