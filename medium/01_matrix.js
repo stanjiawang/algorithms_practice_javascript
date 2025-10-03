@@ -111,3 +111,17 @@ export class Solution {
     return distanceMatrix;
   }
 }
+
+/*
+How to Explain in Interview (easy to memorize)
+
+What: I need the distance of each cell to the nearest 0.
+Idea: Instead of starting BFS from each 1, I start from all 0s simultaneously. This is called multi-source BFS.
+Why: BFS spreads layer by layer. The first time a cell is reached, that’s the shortest path.
+How:
+Put all 0s into the queue, set their distance = 0.
+
+Initialize all 1s as Infinity.
+BFS: Pop a cell, try its 4 neighbors. If neighbor’s distance can be improved (shorter path), update it and push it into queue.
+Complexity: Each cell is enqueued at most once → O(m × n).
+*/
