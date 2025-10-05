@@ -27,71 +27,43 @@ a is in the dict.
 
 export class Solution {
   /**
-   * Word Break — Dynamic Programming with length pruning
-   *
-   * @param {string} s - The input string to segment.
-   * @param {string[]|Set<string>} wordSet - Dictionary; words can be reused.
-   * @return {boolean} True if `s` can be segmented into dictionary words, else false.
-   *
-   * Idea (based on the string, not the dictionary):
-   * ------------------------------------------------
-   * Let canSegmentUpTo[i] mean: the prefix s[0..i-1] (first i chars) can be segmented.
-   * Transition: canSegmentUpTo[end] = true if there exists a start such that
-   *   - canSegmentUpTo[start] is true, and
-   *   - s.slice(start, end) is in the dictionary.
-   *
-   * Pruning:
-   *   Only try substring lengths that actually exist in the dictionary (e.g., {1,2,5}),
-   *   and skip lengths longer than the current end index. This avoids useless checks.
-   *
-   * Time:  O(n * K), where n = s.length, K = number of distinct word lengths in the dict
-   * Space: O(n)
+   * Word Break — minimal DP with length pruning
+   * @param {string} s
+   * @param {string[]|Set<string>} wordSet
+   * @return {boolean}
    */
   wordBreak(s, wordSet) {
-    // Edge cases
+    // Empty string is segmentable by definition.
     if (s.length === 0) return true;
 
-    // Normalize dictionary to a Set for O(1) lookups; filter out empty strings if any.
-    const dictionary = new Set();
-    if (wordSet && typeof wordSet[Symbol.iterator] === "function") {
-      for (const w of wordSet) {
-        if (typeof w === "string" && w.length > 0) dictionary.add(w);
-      }
-    }
-    if (dictionary.size === 0) return false;
+    // O(1) lookups; works for array or Set input.
+    const dictionary = new Set(wordSet);
 
-    // Collect actual word lengths to iterate precisely (e.g., {1, 2, 5})
+    // Only try real word lengths (pruning).
     const wordLengths = new Set();
     for (const w of dictionary) wordLengths.add(w.length);
 
     const n = s.length;
+    // canSegment[i]: s[0..i) can be segmented.
+    const canSegment = new Array(n + 1).fill(false);
+    canSegment[0] = true;
 
-    // canSegmentUpTo[i] == true  ⇔  s[0..i-1] can be segmented
-    const canSegmentUpTo = new Array(n + 1).fill(false);
-    canSegmentUpTo[0] = true; // empty prefix is segmentable (base case)
+    for (let end = 1; end <= n; end++) {
+      for (const len of wordLengths) {
+        if (len > end) continue;              // too long to fit here
+        const start = end - len;
+        if (!canSegment[start]) continue;     // prefix not segmentable
 
-    // Try to build up segmentability from left to right
-    for (let endIndex = 1; endIndex <= n; endIndex++) {
-      // Only try lengths that exist in the dictionary and fit into [0..endIndex)
-      for (const length of wordLengths) {
-        if (length > endIndex) continue;
-
-        const startIndex = endIndex - length;
-
-        // If the prefix up to startIndex isn't segmentable, no need to check this piece
-        if (!canSegmentUpTo[startIndex]) continue;
-
-        const candidate = s.slice(startIndex, endIndex);
-        if (dictionary.has(candidate)) {
-          canSegmentUpTo[endIndex] = true;
-          break; // Found a valid cut ending at endIndex; no need to try other lengths
+        if (dictionary.has(s.slice(start, end))) {
+          canSegment[end] = true;             // found a valid cut
+          break;                              // no need to try more lengths
         }
       }
     }
-
-    return canSegmentUpTo[n];
+    return canSegment[n];
   }
 }
+
 
 /*
 How to explain it in an interview (short & crisp)
