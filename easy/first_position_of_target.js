@@ -24,7 +24,7 @@ const binarySearch = (nums, target) => {
             // Find the first position
             // start = mid; if you want to find the last position
             // return mid; if you just want to find any
-            end = mid;
+            return mid;
         } else if (nums[mid] < target) {
             start = mid;
         } else {
