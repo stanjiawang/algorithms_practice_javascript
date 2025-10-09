@@ -1,6 +1,4 @@
-# Frontend Interview Problem Types – 中英双语优化版
-A bilingual, GitHub-ready study guide for 25 essential frontend interview problem types.  
-前端算法题型中英对照精华总结，共 25 类常考问题。
+# Frontend Interview Problem Types  
 
 ---
 ## 📘 Table of Contents
