@@ -75,3 +75,59 @@ export class Solution {
     return result;
   }
 }
+
+/*
+https://www.lintcode.com/problem/547/description?fromId=213&_from=collection
+
+Intersection of Two Arrays
+
+Given two arrays, write a function to compute their intersection.
+
+Input: nums1 = [1, 2, 2, 1], nums2 = [2, 2], 
+Output: [2].
+
+Input: nums1 = [1, 2], nums2 = [2], 
+Output: [2].
+*/
+
+export class Solution {
+  /**
+   * Compute the intersection of two integer arrays.
+   * Each element in the result must be unique.
+   *
+   * Example:
+   * Input:  nums1 = [1, 2, 2, 1], nums2 = [2, 2]
+   * Output: [2]
+   *
+   * @param {number[]} nums1 - The first integer array
+   * @param {number[]} nums2 - The second integer array
+   * @return {number[]} - The unique intersection elements
+   */
+  intersection(nums1, nums2) {
+    // ✅ Step 1: Convert both arrays into Sets to remove duplicates
+    const nums1Set = new Set(nums1);
+    const nums2Set = new Set(nums2);
+
+    // ✅ Step 2: Initialize an array to store intersection results
+    const intersectionResult = [];
+
+    // ✅ Step 3: Iterate through one set and check if element exists in the other
+    for (const num of nums1Set) {
+      if (nums2Set.has(num)) {
+        intersectionResult.push(num);
+      }
+    }
+
+    // ✅ Step 4: Return the intersection array
+    // (Sorting not necessary; the output order does not matter)
+    return intersectionResult;
+  }
+}
+
+/*
+Time Complexity: O(n + m)
+(Building two sets + one linear pass for intersection)
+
+Space Complexity: O(n + m)
+(Two sets storing unique values)
+*/
