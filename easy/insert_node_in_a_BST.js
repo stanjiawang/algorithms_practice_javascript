@@ -42,7 +42,7 @@ Output:
  * @return {TreeNode}
  */
 const insertIntoBST = (root, val) => {
-  if (root = null) {
+  if (root === null) {
     return new TreeNode
   }
 
