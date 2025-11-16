@@ -1155,6 +1155,74 @@ graphBFS(num, edges, start) {
     return result;
 }
 
+```
 
+**Has Cycle Directed:**
+```js
+function hasCycleDirected(num, edges) {
+    // 构建 adjacency list
+    const graph = Array.from({ length: num }, () => []);
 
+    for (const [u, v] of edges) {
+        graph[u].push(v); // 有向图
+    }
+
+    const visited = new Array(num).fill(false);
+    const onPath = new Array(num).fill(false); // recursion stack
+
+    function dfs(node) {
+        if (onPath[node]) return true;  // ❗ found a cycle
+        if (visited[node]) return false;
+
+        visited[node] = true;
+        onPath[node] = true;
+
+        for (const nei of graph[node]) {
+            if (dfs(nei)) return true;
+        }
+
+        onPath[node] = false; // 退出 recursion stack
+        return false;
+    }
+
+    // 图可能不连通，因此对每个节点尝试 DFS
+    for (let i = 0; i < num; i++) {
+        if (!visited[i] && dfs(i)) return true;
+    }
+
+    return false;
+}
+
+```
+
+**Has Cycle Directed BFS:**
+```js
+function hasCycleDirectedKahn(num, edges) {
+    const graph = Array.from({ length: num }, () => []);
+    const inDegree = Array(num).fill(0);
+
+    for (const [u, v] of edges) {
+        graph[u].push(v);
+        inDegree[v]++;
+    }
+
+    const queue = [];
+    for (let i = 0; i < num; i++) {
+        if (inDegree[i] === 0) queue.push(i);
+    }
+
+    let count = 0;
+
+    while (queue.length > 0) {
+        const node = queue.shift();
+        count++;
+
+        for (const nei of graph[node]) {
+            inDegree[nei]--;
+            if (inDegree[nei] === 0) queue.push(nei);
+        }
+    }
+
+    return count !== num; // count < num 表示有环
+}
 
