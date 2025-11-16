@@ -568,12 +568,17 @@ Use `.reduce()` to group items under their key.
 **Code:**
 ```js
 function groupBy(arr, key) {
-  return arr.reduce((acc, obj) => {
+  const result = {};
+
+  for (const obj of arr) {
     const group = obj[key];
-    if (!acc[group]) acc[group] = [];
-    acc[group].push(obj);
-    return acc;
-  }, {});
+    if (!result[group]) {
+      result[group] = [];
+    }
+    result[group].push(obj);
+  }
+
+  return result;
 }
 ```
 
