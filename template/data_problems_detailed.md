@@ -790,24 +790,23 @@ Reduce array into a map where values are summed.
 
 **Code:**
 ```js
-function sumByGroup(data, groupKey, valueKey) {
+function sumByType(data) {
   const result = {};
 
   for (const item of data) {
-    const group = item[groupKey];   // 比如 "a" / "b"
-    const value = item[valueKey];   // 比如 2 / 3 / 1
+    const type = item.type; // 分组字段固定
+    const val = item.val;   // 累加字段固定
 
-    // 如果这个 group 还不存在，先初始化为 0
-    if (!result[group]) {
-      result[group] = 0;
+    if (!result[type]) {
+      result[type] = 0;
     }
 
-    // 累加
-    result[group] += value;
+    result[type] += val;
   }
 
   return result;
 }
+
 
 ```
 
