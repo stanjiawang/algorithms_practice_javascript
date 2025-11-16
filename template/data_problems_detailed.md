@@ -903,4 +903,80 @@ function topoSortFromDependencies(dependencies) {
   return result;
 }
 
+```
+
+**Code:**
+```js
+
+function topoSortFromList(dependencies) {
+  // -----------------------------
+  // 1. 自动提取所有任务
+  // -----------------------------
+  const tasks = new Set();
+
+  for (const arr of dependencies) {
+    const [key, ...rest] = arr;
+    tasks.add(key);
+    for (const r of rest) tasks.add(r);
+  }
+
+  // -----------------------------
+  // 2. 建 adjacency list & indegree
+  // -----------------------------
+  const graph = new Map();
+  const indegree = new Map();
+
+  for (const t of tasks) {
+    graph.set(t, []);
+    indegree.set(t, 0);
+  }
+
+  // -----------------------------
+  // 3. 填充 graph & indegree
+  // -----------------------------
+  for (const arr of dependencies) {
+    const [key, ...rest] = arr;
+
+    for (const child of rest) {
+      graph.get(key).push(child);
+      indegree.set(child, indegree.get(child) + 1);
+    }
+  }
+
+  // -----------------------------
+  // 4. 初始 queue（所有入度为 0 的 root）
+  // -----------------------------
+  const queue = [];
+  for (const [task, deg] of indegree) {
+    if (deg === 0) queue.push(task);
+  }
+
+  // -----------------------------
+  // 5. BFS 拓扑排序
+  // -----------------------------
+  const result = [];
+
+  while (queue.length > 0) {
+    const node = queue.shift();
+    result.push(node);
+
+    for (const child of graph.get(node)) {
+      indegree.set(child, indegree.get(child) - 1);
+
+      if (indegree.get(child) === 0) {
+        queue.push(child);
+      }
+    }
+  }
+
+  // -----------------------------
+  // 6. Cycle detection
+  // -----------------------------
+  if (result.length !== tasks.size) {
+    return []; // cycle exists
+  }
+
+  return result;
+}
+
 
