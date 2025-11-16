@@ -791,12 +791,24 @@ Reduce array into a map where values are summed.
 **Code:**
 ```js
 function sumByGroup(data, groupKey, valueKey) {
-  return data.reduce((acc, item) => {
-    const key = item[groupKey];
-    acc[key] = (acc[key] || 0) + item[valueKey];
-    return acc;
-  }, {});
+  const result = {};
+
+  for (const item of data) {
+    const group = item[groupKey];   // 比如 "a" / "b"
+    const value = item[valueKey];   // 比如 2 / 3 / 1
+
+    // 如果这个 group 还不存在，先初始化为 0
+    if (!result[group]) {
+      result[group] = 0;
+    }
+
+    // 累加
+    result[group] += value;
+  }
+
+  return result;
 }
+
 ```
 
 **Complexity:**  
