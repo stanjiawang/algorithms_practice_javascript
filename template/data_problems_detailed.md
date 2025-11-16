@@ -1122,7 +1122,10 @@ function maxDepth(root) {
 
     return max + 1;
 }
+```
 
+**Graph BFS:**
+```js
 graphBFS(num, edges, start) {
     // Step 1: adjacency list
     const graph = Array.from({ length: num }, () => []);
