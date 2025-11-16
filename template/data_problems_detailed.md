@@ -943,8 +943,38 @@ Return a flat map of roles to all inherited permissions.
 
 **Example:**  
 ```js
-Input: Tree of roles, each with children and permissions.
-Output: { admin: ["read", "write"], user: ["read"] }
+Input:
+const roles = [
+  {
+    name: "admin",
+    permissions: ["read", "write"],
+    children: [
+      {
+        name: "manager",
+        permissions: ["write"],
+        children: [
+          {
+            name: "staff",
+            permissions: ["comment"],
+            children: []
+          }
+        ]
+      },
+      {
+        name: "auditor",
+        permissions: ["read"],
+        children: []
+      }
+    ]
+  }
+];
+Output:
+{
+  admin:   ["read", "write"],
+  manager: ["read", "write"],     // 继承 admin + manager 自己的 "write"
+  staff:   ["read", "write", "comment"], // 继承 admin + manager + 自己
+  auditor: ["read"]               // 继承 admin? (看设计)
+}
 ```
 
 **Approach:**  
@@ -953,15 +983,39 @@ DFS with inherited permission accumulation.
 **Code:**
 ```js
 function flattenPermissions(tree) {
-  const res = {};
-  function dfs(node, inherited = []) {
-    const perms = [...new Set([...inherited, ...(node.permissions || [])])];
-    res[node.name] = perms;
-    for (const child of node.children || []) dfs(child, perms);
+  const result = {};
+
+  function dfs(node, inheritedPermissions) {
+    // 1. 当前角色 = 父级所有权限 + 自己的权限
+    const currentPermissions = [...inheritedPermissions];
+
+    if (node.permissions) {
+      for (const p of node.permissions) {
+        if (!currentPermissions.includes(p)) {
+          currentPermissions.push(p);
+        }
+      }
+    }
+
+    // 2. 记录当前角色的权限
+    result[node.name] = currentPermissions;
+
+    // 3. 遍历子角色，传递当前权限下去
+    if (node.children) {
+      for (const child of node.children) {
+        dfs(child, currentPermissions);
+      }
+    }
   }
-  tree.forEach(r => dfs(r));
-  return res;
+
+  // 多个 root
+  for (const root of tree) {
+    dfs(root, []);
+  }
+
+  return result;
 }
+
 ```
 
 **Complexity:**  
