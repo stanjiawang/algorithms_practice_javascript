@@ -1225,4 +1225,146 @@ function hasCycleDirectedKahn(num, edges) {
 
     return count !== num; // count < num 表示有环
 }
+```
 
+**Connected Components:**
+```js
+function countComponents(n, edges) {
+  const graph = Array.from({ length: n }, () => []);
+
+  for (const [u, v] of edges) {
+    graph[u].push(v);
+    graph[v].push(u);
+  }
+
+  const visited = new Set();
+  let count = 0;
+
+  function dfs(node) {
+    visited.add(node);
+    for (const nei of graph[node]) {
+      if (!visited.has(nei)) {
+        dfs(nei);
+      }
+    }
+  }
+
+  for (let i = 0; i < n; i++) {
+    if (!visited.has(i)) {
+      dfs(i);
+      count++;  // new connected component
+    }
+  }
+
+  return count;
+}
+
+```
+
+**MinHeap:**
+```js
+class MinHeap {
+  constructor() { this.h = []; }
+
+  size() { return this.h.length; }
+  peek() { return this.h[0]; }
+
+  push(x) {
+    this.h.push(x);
+    let i = this.h.length - 1;
+    while (i > 0) {
+      let p = (i - 1) >> 1;
+      if (this.h[p] <= this.h[i]) break;
+      [this.h[p], this.h[i]] = [this.h[i], this.h[p]];
+      i = p;
+    }
+  }
+
+  pop() {
+    if (this.h.length === 1) return this.h.pop();
+    const top = this.h[0];
+    this.h[0] = this.h.pop();
+    let i = 0, n = this.h.length;
+    while (true) {
+      let l = i * 2 + 1, r = i * 2 + 2, m = i;
+      if (l < n && this.h[l] < this.h[m]) m = l;
+      if (r < n && this.h[r] < this.h[m]) m = r;
+      if (m === i) break;
+      [this.h[i], this.h[m]] = [this.h[m], this.h[i]];
+      i = m;
+    }
+    return top;
+  }
+}
+
+```
+
+**MaxHeap:**
+```js
+class MaxHeap {
+  constructor() { this.h = []; }
+
+  size() { return this.h.length; }
+  peek() { return this.h[0]; }
+
+  push(x) {
+    this.h.push(x);
+    let i = this.h.length - 1;
+    while (i > 0) {
+      let p = (i - 1) >> 1;
+      if (this.h[p] >= this.h[i]) break;
+      [this.h[p], this.h[i]] = [this.h[i], this.h[p]];
+      i = p;
+    }
+  }
+
+  pop() {
+    if (this.h.length === 1) return this.h.pop();
+    const top = this.h[0];
+    this.h[0] = this.h.pop();
+    let i = 0, n = this.h.length;
+    while (true) {
+      let l = i * 2 + 1, r = i * 2 + 2, m = i;
+      if (l < n && this.h[l] > this.h[m]) m = l;
+      if (r < n && this.h[r] > this.h[m]) m = r;
+      if (m === i) break;
+      [this.h[i], this.h[m]] = [this.h[m], this.h[i]];
+      i = m;
+    }
+    return top;
+  }
+}
+```
+
+**DFS:**
+```js
+function dfs(node) {
+  if (!node) return;
+
+  // 前序
+  console.log(node.val);
+
+  for (const child of node.children) {
+    dfs(child);
+  }
+
+  // 后序
+}
+```
+
+**BFS:**
+```js
+function bfs(root) {
+  if (!root) return;
+
+  const queue = [root];
+
+  while (queue.length > 0) {
+    const node = queue.shift();
+    console.log(node.val);
+
+    for (const child of node.children) {
+      queue.push(child);
+    }
+  }
+}
