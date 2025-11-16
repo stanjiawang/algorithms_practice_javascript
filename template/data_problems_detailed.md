@@ -1,3 +1,195 @@
+# Graph / Tree / DFS / BFS / Heap --- Full Cheat Sheet (Detailed)
+
+## 1. Build Tree from Flat List
+
+A flat list with id/parentId → convert to hierarchical tree.
+
+``` js
+const nodeMap = new Map();
+flatList.forEach(n => nodeMap.set(n.id, {...n, children: []}));
+
+let root = null;
+flatList.forEach(n => {
+  if (n.parentId === 0) root = nodeMap.get(n.id);
+  else nodeMap.get(n.parentId)?.children.push(nodeMap.get(n.id));
+});
+```
+
+## 2. Build Graph (Adjacency List)
+
+### Continuous numeric IDs → array
+
+``` js
+const graph = Array.from({length: n}, () => []);
+for (const [u, v] of edges) graph[u].push(v);
+```
+
+### Non-continuous IDs → Map
+
+``` js
+const graph = new Map();
+for (const [u, v] of edges) {
+  if (!graph.has(u)) graph.set(u, []);
+  graph.get(u).push(v);
+}
+```
+
+## 3. indegree
+
+Used for topological sort. \### Array
+
+``` js
+const indegree = Array(n).fill(0);
+for (const [u, v] of edges) indegree[v]++;
+```
+
+### Map
+
+``` js
+indegree.set(v, (indegree.get(v) || 0) + 1);
+```
+
+## 4. DFS Templates
+
+### Tree DFS (no visited needed)
+
+``` js
+function dfsTree(node) {
+  if (!node) return;
+  console.log(node.val);
+  node.children.forEach(dfsTree);
+}
+```
+
+### Graph DFS (requires visited)
+
+``` js
+function dfs(node) {
+  if (visited.has(node)) return;
+  visited.add(node);
+  for (const nei of graph[node]) dfs(nei);
+}
+```
+
+## 5. BFS Templates
+
+### Graph BFS
+
+``` js
+function bfs(start) {
+  const queue = [start];
+  visited.add(start);
+  while (queue.length) {
+    const node = queue.shift();
+    for (const nei of graph[node]) {
+      if (!visited.has(nei)) {
+        visited.add(nei);
+        queue.push(nei);
+      }
+    }
+  }
+}
+```
+
+## 6. Topological Sort (Kahn)
+
+``` js
+const queue = [];
+for (let i = 0; i < n; i++) if (indegree[i] === 0) queue.push(i);
+
+const result = [];
+while (queue.length) {
+  const cur = queue.shift();
+  result.push(cur);
+  for (const nei of graph[cur]) {
+    if (--indegree[nei] === 0) queue.push(nei);
+  }
+}
+```
+
+## 7. Cycle Detection (Directed)
+
+``` js
+const visited = new Set();
+const onPath = new Set();
+
+function hasCycle(node) {
+  if (onPath.has(node)) return true;
+  if (visited.has(node)) return false;
+
+  visited.add(node);
+  onPath.add(node);
+
+  for (const nei of graph[node]) {
+    if (hasCycle(nei)) return true;
+  }
+
+  onPath.delete(node);
+  return false;
+}
+```
+
+## 8. Connected Components
+
+``` js
+let count = 0;
+for (let i = 0; i < n; i++) {
+  if (!visited.has(i)) {
+    dfs(i);
+    count++;
+  }
+}
+```
+
+## 9. Clone Graph
+
+Deep copy graph with Map (oldNode -\> newNode)
+
+``` js
+const map = new Map();
+function clone(node) {
+  if (map.has(node)) return map.get(node);
+  const copy = { val: node.val, neighbors: [] };
+  map.set(node, copy);
+  node.neighbors.forEach(nei => copy.neighbors.push(clone(nei)));
+  return copy;
+}
+```
+
+## 10. Min-Heap (Minimal 20-line Implementation)
+
+``` js
+class MinHeap {
+  constructor() { this.h = []; }
+  size() { return this.h.length; }
+  peek() { return this.h[0]; }
+  push(x) {
+    this.h.push(x);
+    let i = this.h.length - 1;
+    while (i > 0) {
+      let p = (i - 1) >> 1;
+      if (this.h[p] <= this.h[i]) break;
+      [this.h[p], this.h[i]] = [this.h[i], this.h[p]];
+      i = p;
+    }
+  }
+  pop() {
+    if (this.h.length === 1) return this.h.pop();
+    const t = this.h[0];
+    this.h[0] = this.h.pop();
+    let i = 0, n = this.h.length;
+    while (true) {
+      let l = i*2+1, r = i*2+2, m = i;
+      if (l < n && this.h[l] < this.h[m]) m = l;
+      if (r < n && this.h[r] < this.h[m]) m = r;
+      if (m === i) break;
+      [this.h[i], this.h[m]] = [this.h[m], this.h[i]];
+      i = m;
+    }
+    return t;
+  }
+}
+```
 
 ---
 
