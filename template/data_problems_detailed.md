@@ -1123,3 +1123,35 @@ function maxDepth(root) {
     return max + 1;
 }
 
+graphBFS(num, edges, start) {
+    // Step 1: adjacency list
+    const graph = Array.from({ length: num }, () => []);
+
+    for (const [u, v] of edges) {
+        graph[u].push(v);
+        graph[v].push(u); // 无向图双向加边
+    }
+
+    // Step 2: BFS
+    const result = [];
+    const queue = [start];
+    const visited = new Set([start]);
+
+    while (queue.length > 0) {
+        const node = queue.shift();
+        result.push(node);
+
+        for (const neighbor of graph[node]) {
+            if (!visited.has(neighbor)) {
+                visited.add(neighbor);
+                queue.push(neighbor);
+            }
+        }
+    }
+
+    return result;
+}
+
+
+
+
