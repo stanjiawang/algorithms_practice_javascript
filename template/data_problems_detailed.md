@@ -770,7 +770,7 @@ Space: O(n)
 ---
 
 
-**Code:**
+**Topo Sort Code:**
 ```js
 /**
  * @param {string[]} tasks       // 所有任务
@@ -836,7 +836,7 @@ function topoSort(tasks, dependencies) {
 }
 ```
 
-**Code:**
+**Topo Sort From Dependencies Code:**
 ```js
 function topoSortFromDependencies(dependencies) {
   // -----------------------------
@@ -905,7 +905,7 @@ function topoSortFromDependencies(dependencies) {
 
 ```
 
-**Code:**
+**Topo Sort From List Code:**
 ```js
 
 function topoSortFromList(dependencies) {
@@ -982,7 +982,7 @@ function topoSortFromList(dependencies) {
 
 ```
 
-**Code:**
+**DFS Search Code:**
 ```js
 function dfsSearch(graph, source) {
   const result = [];
@@ -1008,7 +1008,7 @@ function dfsSearch(graph, source) {
 
 ```
 
-**Code:**
+**Flat List BFS Code:**
 ```js
 function flatListBFS(flatList) {
     const nodeMap = new Map();
@@ -1057,3 +1057,48 @@ function flatListBFS(flatList) {
     return result;
 }
 
+
+```
+
+**Flat List DFS Code:**
+```js
+function flatListDFS(flatList) {
+    const nodeMap = new Map();
+
+    // Step 1: 初始化节点
+    for (const item of flatList) {
+        nodeMap.set(item.id, { ...item, children: [] });
+    }
+
+    let root = null;
+
+    // Step 2: 建立 parent-child 关系
+    for (const item of flatList) {
+        const node = nodeMap.get(item.id);
+
+        if (item.parentId === 0) {
+            root = node;
+        } else {
+            const parent = nodeMap.get(item.parentId);
+            if (parent) parent.children.push(node);
+        }
+    }
+
+    // Step 3: DFS 前序遍历
+    const result = [];
+
+    function dfs(node) {
+        if (!node) return;
+
+        // 访问自己
+        result.push(node.id);
+
+        // 遍历 children
+        for (const child of node.children) {
+            dfs(child);
+        }
+    }
+
+    dfs(root);
+    return result;
+}
