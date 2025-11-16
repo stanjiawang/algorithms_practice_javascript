@@ -1102,3 +1102,24 @@ function flatListDFS(flatList) {
     dfs(root);
     return result;
 }
+
+```
+
+**Tree Max Depth:**
+```js
+function maxDepth(root) {
+    if (!root) return 0;
+
+    if (root.children.length === 0) {
+        return 1;
+    }
+
+    let max = 0;
+
+    for (const child of root.children) {
+        max = Math.max(max, maxDepth(child));
+    }
+
+    return max + 1;
+}
+
