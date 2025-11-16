@@ -1006,3 +1006,54 @@ function dfsSearch(graph, source) {
   return result;
 }
 
+```
+
+**Code:**
+```js
+function flatListBFS(flatList) {
+    const nodeMap = new Map();
+
+    // Create nodes
+    for (const item of flatList) {
+        nodeMap.set(item.id, { ...item, children: [] });
+    }
+
+    let root = null;
+
+    // Build tree
+    for (const item of flatList) {
+        const node = nodeMap.get(item.id);
+
+        if (item.parentId === 0) {
+            root = node;
+        } else {
+            const parent = nodeMap.get(item.parentId);
+            if (parent) {
+                parent.children.push(node);
+            }
+        }
+    }
+
+    // BFS
+    const result = [];
+    const queue = [root];
+
+    while (queue.length > 0) {
+        const len = queue.length;
+        const level = [];
+
+        for (let i = 0; i < len; i++) {
+            const node = queue.shift();
+            level.push(node.id);
+
+            for (const child of node.children) {
+                queue.push(child);
+            }
+        }
+
+        result.push(level);
+    }
+
+    return result;
+}
+
