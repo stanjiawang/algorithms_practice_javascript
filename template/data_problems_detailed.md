@@ -980,3 +980,29 @@ function topoSortFromList(dependencies) {
 }
 
 
+```
+
+**Code:**
+```js
+function dfsSearch(graph, source) {
+  const result = [];
+  const visited = new Set();
+
+  if (!graph || !graph[source]) return [];
+
+  function dfs(node) {
+    if (visited.has(node)) return;
+
+    visited.add(node);
+    result.push(node);
+
+    for (const child of graph[node] || []) {
+      dfs(child);
+    }
+  }
+
+  dfs(source);
+
+  return result;
+}
+
