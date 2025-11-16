@@ -768,3 +768,70 @@ Time: O(n)
 Space: O(n)
 
 ---
+
+
+**Code:**
+```js
+/**
+ * @param {string[]} tasks       // 所有任务
+ * @param {Array<[string, string]>} dependencies // [a, b] 表示 a → b （b depends on a）
+ * @return {string[]}            // 返回一个合法的拓扑序；如有环返回 []
+ */
+function topoSort(tasks, dependencies) {
+  // -----------------------------
+  // 1. 初始化 adjacency list & indegree
+  // -----------------------------
+  const graph = new Map();     // a → [b1, b2 ...]
+  const indegree = new Map();  // 每个节点的入度数量
+
+  for (const t of tasks) {
+    graph.set(t, []);
+    indegree.set(t, 0);
+  }
+
+  // -----------------------------
+  // 2. 构建图 & 入度表
+  // -----------------------------
+  for (const [a, b] of dependencies) {
+    graph.get(a).push(b);                     // a → b
+    indegree.set(b, indegree.get(b) + 1);     // b 的前置任务 +1
+  }
+
+  // -----------------------------
+  // 3. 将所有 indegree === 0 的任务入队（多个 root 支持）
+  // -----------------------------
+  const queue = [];
+  for (const [task, deg] of indegree) {
+    if (deg === 0) queue.push(task);
+  }
+
+  // -----------------------------
+  // 4. BFS 拓扑排序
+  // -----------------------------
+  const result = [];
+
+  while (queue.length > 0) {
+    const node = queue.shift();
+    result.push(node);
+
+    // 将 node 指向的所有节点入度减 1
+    for (const next of graph.get(node)) {
+      indegree.set(next, indegree.get(next) - 1);
+
+      // 若入度变成 0，则可以执行，入队
+      if (indegree.get(next) === 0) {
+        queue.push(next);
+      }
+    }
+  }
+
+  // -----------------------------
+  // 5. 如果结果数量不等于任务数量 → 有环
+  // -----------------------------
+  if (result.length !== tasks.length) {
+    return [];  // cycle detected
+  }
+
+  return result;
+}
+
