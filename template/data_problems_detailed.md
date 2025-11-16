@@ -881,8 +881,28 @@ Group events by date (ignoring time).
 
 **Example:**
 ```js
-Input: [{ date: "2023-08-01T10:00" }, { date: "2023-08-01T12:00" }]
-Output: { "2023-08-01": [{...}, {...}] }
+Input:
+const events = [
+  { id: 1, date: "2023-08-01T10:00", name: "Morning Meeting" },
+  { id: 2, date: "2023-08-01T12:30", name: "Lunch with Bob" },
+  { id: 3, date: "2023-08-02T09:00", name: "Daily Standup" },
+  { id: 4, date: "2023-08-02T18:00", name: "Dinner" },
+  { id: 5, date: "2023-08-03T07:30", name: "Gym" }
+];
+Output:
+{
+  "2023-08-01": [
+    { id: 1, date: "2023-08-01T10:00", name: "Morning Meeting" },
+    { id: 2, date: "2023-08-01T12:30", name: "Lunch with Bob" }
+  ],
+  "2023-08-02": [
+    { id: 3, date: "2023-08-02T09:00", name: "Daily Standup" },
+    { id: 4, date: "2023-08-02T18:00", name: "Dinner" }
+  ],
+  "2023-08-03": [
+    { id: 5, date: "2023-08-03T07:30", name: "Gym" }
+  ]
+}
 ```
 
 **Approach:**  
@@ -891,12 +911,22 @@ Use ISO string split and group with reduce.
 **Code:**
 ```js
 function groupByDate(items) {
-  return items.reduce((acc, item) => {
-    const date = item.date.split("T")[0];
-    acc[date] = acc[date] || [];
-    acc[date].push(item);
-    return acc;
-  }, {});
+  const result = {};
+
+  for (const item of items) {
+    // 1. "2023-08-01T10:00" → "2023-08-01"
+    const dateOnly = item.date.split("T")[0];
+
+    // 2. 如果这一天还没有数组，就先创建它
+    if (!result[dateOnly]) {
+      result[dateOnly] = [];
+    }
+
+    // 3. 把起当前 event 放进去
+    result[dateOnly].push(item);
+  }
+
+  return result;
 }
 ```
 
